@@ -10,7 +10,6 @@ import whisper
 import torch
 from transformers import pipeline
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
