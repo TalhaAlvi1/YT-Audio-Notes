@@ -47,3 +47,40 @@ class YTAudioNotes:
         # Initialize the summarization pipeline
         logger.info("Initializing summarization pipeline")
         self.summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
+    def download_audio(self, url: str, output_dir: str = "output") -> str:
+        """
+        Download audio from a YouTube video URL.
+
+        Args:
+            url: YouTube video URL
+            output_dir: Directory to save the audio file
+
+        Returns:
+            Path to the downloaded audio file
+        """
+        logger.info(f"Downloading audio from: {url}")
+        try:
+            # Create output directory if it doesn't exist
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Download the YouTube video
+            yt = pytube.YouTube(url)
+            video_title = yt.title
+            logger.info(f"Video title: {video_title}")
+
+            # Extract audio
+            audio_stream = yt.streams.filter(only_audio=True).first()
+            audio_file = audio_stream.download(output_path=output_dir)
+
+            # Rename to mp3 (optional, Whisper can handle various formats)
+            base, _ = os.path.splitext(audio_file)
+            mp3_file = f"{base}.mp3"
+            os.rename(audio_file, mp3_file)
+
+            logger.info(f"Audio saved to: {mp3_file}")
+            return mp3_file
+
+        except Exception as e:
+            logger.error(f"Error downloading audio: {str(e)}")
+            raise
