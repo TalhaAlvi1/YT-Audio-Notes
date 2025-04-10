@@ -84,3 +84,63 @@ class YTAudioNotes:
         except Exception as e:
             logger.error(f"Error downloading audio: {str(e)}")
             raise
+
+    def transcribe_audio(self, audio_file: str, include_timestamps: bool = False) -> Dict[str, Any]:
+        """
+        Transcribe the audio file.
+
+        Args:
+            audio_file: Path to the audio file
+            include_timestamps: Whether to include timestamps in the transcript
+
+        Returns:
+            Dictionary containing the transcript and metadata
+        """
+        logger.info(f"Transcribing audio file: {audio_file}")
+
+        try:
+            if self.use_openai_api:
+                import openai
+                openai.api_key = self.openai_api_key
+
+                with open(audio_file, "rb") as audio:
+                    response = openai.Audio.transcribe(
+                        model="whisper-1",
+                        file=audio,
+                        language=self.language
+                    )
+                result = response.to_dict()
+            else:
+                # Use local Whisper model
+                transcribe_options = {}
+                if self.language:
+                    transcribe_options["language"] = self.language
+
+                result = self.model.transcribe(
+                    audio_file,
+                    **transcribe_options
+                )
+
+            # Extract and format transcript
+            transcript = result["text"]
+
+            # Include timestamps if requested
+            if include_timestamps and not self.use_openai_api:
+                segments = result["segments"]
+                transcript_with_timestamps = ""
+
+                for segment in segments:
+                    start_time = format_timestamp(segment["start"])
+                    text = segment["text"]
+                    transcript_with_timestamps += f"[{start_time}] {text}\n"
+
+                result["formatted_transcript"] = transcript_with_timestamps
+            else:
+                result["formatted_transcript"] = transcript
+
+            logger.info("Transcription completed")
+            return result
+
+        except Exception as e:
+            logger.error(f"Error transcribing audio: {str(e)}")
+            raise
