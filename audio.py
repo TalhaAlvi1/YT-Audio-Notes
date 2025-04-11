@@ -144,3 +144,17 @@ class YTAudioNotes:
         except Exception as e:
             logger.error(f"Error transcribing audio: {str(e)}")
             raise
+   def generate_notes(self, transcript: str, max_length: int = 500,
+                       min_length: int = 150) -> str:
+        """
+        Generate summarized notes from a transcript.
+
+        Args:
+            transcript: The transcript text
+            max_length: Maximum length of the summary
+            min_length: Minimum length of the summary
+
+        Returns:
+            Summarized notes in bullet-point format
+        """
+        logger.info("Generating notes from transcript")
