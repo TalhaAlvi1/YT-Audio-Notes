@@ -158,3 +158,34 @@ class YTAudioNotes:
             Summarized notes in bullet-point format
         """
         logger.info("Generating notes from transcript")
+
+        try:
+            # Split long transcripts into chunks for processing
+            chunks = split_text(transcript, max_chunk_size=1000)
+            summaries = []
+
+            for i, chunk in enumerate(chunks):
+                logger.info(f"Summarizing chunk {i+1}/{len(chunks)}")
+
+                # Get summary for this chunk
+                summary = self.summarizer(
+                    chunk,
+                    max_length=max_length // len(chunks),
+                    min_length=min_length // len(chunks),
+                    do_sample=False
+                )[0]["summary_text"]
+
+                summaries.append(summary)
+
+            # Combine summaries
+            combined_summary = " ".join(summaries)
+
+            # Convert to bullet points
+            bullet_points = self._convert_to_bullet_points(combined_summary)
+
+            logger.info("Notes generation completed")
+            return bullet_points
+
+        except Exception as e:
+            logger.error(f"Error generating notes: {str(e)}")
+            raise
