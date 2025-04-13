@@ -189,3 +189,17 @@ class YTAudioNotes:
         except Exception as e:
             logger.error(f"Error generating notes: {str(e)}")
             raise
+
+    def _convert_to_bullet_points(self, text: str) -> str:
+        """Convert a text into bullet points."""
+        # Split by sentences
+        import re
+        sentences = re.split(r'(?<=[.!?])\s+', text)
+
+        # Create bullet points
+        bullet_points = ""
+        for sentence in sentences:
+            if sentence.strip():
+                bullet_points += f"* {sentence.strip()}\n"
+
+        return bullet_points
