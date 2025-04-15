@@ -220,3 +220,22 @@ class YTAudioNotes:
         except Exception as e:
             logger.error(f"Error saving to file: {str(e)}")
             raise
+
+    def process_video(self, url: str, output_dir: str = "output",
+                     include_timestamps: bool = False,
+                     transcript_format: str = "txt",
+                     notes_format: str = "md") -> Tuple[str, str]:
+        """
+        Process a YouTube video: download, transcribe, and generate notes.
+
+        Args:
+            url: YouTube video URL
+            output_dir: Directory to save output files
+            include_timestamps: Whether to include timestamps in the transcript
+            transcript_format: Format for transcript file ("txt" or "md")
+            notes_format: Format for notes file ("txt" or "md")
+
+        Returns:
+            Tuple of (transcript_file_path, notes_file_path)
+        """
+        logger.info(f"Processing video: {url}")
