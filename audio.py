@@ -272,3 +272,12 @@ class YTAudioNotes:
             logger.error(f"Error processing video: {str(e)}")
             raise
 
+
+
+def format_timestamp(seconds: float) -> str:
+    """Format seconds into HH:MM:SS."""
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = int(seconds % 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
