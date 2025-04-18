@@ -281,3 +281,25 @@ def format_timestamp(seconds: float) -> str:
     seconds = int(seconds % 60)
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
+def split_text(text: str, max_chunk_size: int = 1000) -> list:
+    """Split text into chunks of maximum size."""
+    words = text.split()
+    chunks = []
+    current_chunk = []
+    current_size = 0
+
+    for word in words:
+        if current_size + len(word) + 1 > max_chunk_size:
+            chunks.append(" ".join(current_chunk))
+            current_chunk = [word]
+            current_size = len(word)
+        else:
+            current_chunk.append(word)
+            current_size += len(word) + 1  # +1 for the space
+
+    # Add the last chunk
+    if current_chunk:
+        chunks.append(" ".join(current_chunk))
+
+    return chunks
+
