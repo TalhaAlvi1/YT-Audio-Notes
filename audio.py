@@ -303,3 +303,23 @@ def split_text(text: str, max_chunk_size: int = 1000) -> list:
 
     return chunks
 
+def main():
+    """Main function to run the command-line tool."""
+    parser = argparse.ArgumentParser(description="YT-Audio-Notes: Extract, transcribe, and summarize YouTube videos")
+    parser.add_argument("--url", required=True, help="YouTube video URL")
+    parser.add_argument("--output", default="output", help="Output directory (default: output)")
+    parser.add_argument("--output-transcript", help="Output file for transcript (default: based on video title)")
+    parser.add_argument("--output-notes", help="Output file for notes (default: based on video title)")
+    parser.add_argument("--use-openai-api", action="store_true", help="Use OpenAI API for transcription")
+    parser.add_argument("--openai-api-key", help="OpenAI API key")
+    parser.add_argument("--whisper-model", default="base",
+                        choices=["tiny", "base", "small", "medium", "large"],
+                        help="Whisper model to use (default: base)")
+    parser.add_argument("--language", help="Language code for transcription")
+    parser.add_argument("--timestamps", action="store_true", help="Include timestamps in transcript")
+    parser.add_argument("--transcript-format", default="txt", choices=["txt", "md"],
+                        help="Format for transcript file (default: txt)")
+    parser.add_argument("--notes-format", default="md", choices=["txt", "md"],
+                        help="Format for notes file (default: md)")
+
+    args = parser.parse_args()
