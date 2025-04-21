@@ -1,4 +1,3 @@
-# Import all the necessary libraries
 import os
 import tempfile
 import logging
