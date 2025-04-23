@@ -23,7 +23,6 @@ class YTAudioNotes:
                  whisper_model: str = "base", language: Optional[str] = None):
         """
         Initialize the YT-Audio-Notes tool.
-
         Args:
             use_openai_api: Whether to use OpenAI's API for transcription
             openai_api_key: OpenAI API key (required if use_openai_api is True)
