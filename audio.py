@@ -177,3 +177,33 @@ class YTAudioNotes:
         except Exception as e:
             logger.error(f"Error generating notes: {str(e)}")
             raise
+
+    def _convert_to_bullet_points(self, text: str) -> str:
+        """Convert a text into bullet points."""
+        # Split by sentences
+        sentences = re.split(r'(?<=[.!?])\s+', text)
+
+        # Create bullet points
+        bullet_points = ""
+        for sentence in sentences:
+            if sentence.strip():
+                bullet_points += f"* {sentence.strip()}\n"
+
+        return bullet_points
+
+    def save_to_file(self, content: str, output_file: str) -> None:
+        """Save content to a file."""
+        logger.info(f"Saving content to: {output_file}")
+
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(os.path.dirname(os.path.abspath(output_file)), exist_ok=True)
+
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(content)
+
+            logger.info(f"Content saved to: {output_file}")
+
+        except Exception as e:
+            logger.error(f"Error saving to file: {str(e)}")
+            raise
