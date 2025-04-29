@@ -207,3 +207,51 @@ class YTAudioNotes:
         except Exception as e:
             logger.error(f"Error saving to file: {str(e)}")
             raise
+    def process_video(self, url: str, output_dir: str = "output",
+                     include_timestamps: bool = False) -> Tuple[str, str]:
+        """
+        Process a YouTube video: download, transcribe, and generate notes.
+
+        Args:
+            url: YouTube video URL
+            output_dir: Directory to save output files
+            include_timestamps: Whether to include timestamps in the transcript
+
+        Returns:
+            Tuple of (transcript_file_path, notes_file_path)
+        """
+        logger.info(f"Processing video: {url}")
+
+        try:
+            # Download audio
+            audio_file = self.download_audio(url, output_dir)
+
+            # Get video title for naming
+            # Extract the filename without extension
+            base_name = os.path.basename(audio_file)
+            video_title = os.path.splitext(base_name)[0]
+            safe_title = "".join(c if c.isalnum() or c in [' ', '_', '-'] else '_' for c in video_title)
+            safe_title = safe_title.replace(' ', '_')
+
+            # Transcribe audio
+            transcription_result = self.transcribe_audio(audio_file, include_timestamps)
+            transcript = transcription_result["formatted_transcript"]
+
+            # Generate notes
+            notes = self.generate_notes(transcript)
+
+            # Save transcript
+            transcript_file = os.path.join(output_dir, f"{safe_title}_transcript.txt")
+            self.save_to_file(transcript, transcript_file)
+
+            # Save notes
+            notes_file = os.path.join(output_dir, f"{safe_title}_notes.md")
+            self.save_to_file(notes, notes_file)
+
+            logger.info("Video processing completed")
+            return transcript_file, notes_file
+
+        except Exception as e:
+            logger.error(f"Error processing video: {str(e)}")
+            raise
+
