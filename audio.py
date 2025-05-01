@@ -284,3 +284,18 @@ def split_text(text: str, max_chunk_size: int = 1000) -> list:
         chunks.append(" ".join(current_chunk))
 
     return chunks
+# Run the tool - only asking for YouTube URL
+def run_yt_audio_notes():
+    print("🎧 YT-Audio-Notes: YouTube to Audio Transcription and Notes 📝")
+    print("===========================================================")
+
+    # Only ask for YouTube URL, use defaults for everything else
+    url = input("Enter YouTube URL: ")
+
+    print("\nProcessing your request with default settings:")
+    print("- Output directory: output")
+    print("- Whisper model: base")
+    print("- Include timestamps: No")
+    print("- Transcript format: txt")
+    print("- Notes format: md")
+    print("\nThis may take some time depending on the video length...\n")
