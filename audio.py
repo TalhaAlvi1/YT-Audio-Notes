@@ -299,3 +299,49 @@ def run_yt_audio_notes():
     print("- Transcript format: txt")
     print("- Notes format: md")
     print("\nThis may take some time depending on the video length...\n")
+
+    # Initialize the tool with default settings
+    yt_notes = YTAudioNotes(
+        whisper_model="base"
+    )
+
+    # Process the video with default settings
+    transcript_file, notes_file = yt_notes.process_video(
+        url=url,
+        output_dir="output",
+        include_timestamps=False
+    )
+
+    print(f"\n✅ Processing completed!")
+    print(f"📄 Transcript saved to: {transcript_file}")
+    print(f"📝 Notes saved to: {notes_file}")
+
+    # Display the content
+    print("\n--- 📄 Transcript Preview ---")
+    with open(transcript_file, 'r', encoding='utf-8') as f:
+        transcript_content = f.read()
+        print(transcript_content[:500] + ("..." if len(transcript_content) > 500 else ""))
+
+    print("\n--- 📝 Notes ---")
+    with open(notes_file, 'r', encoding='utf-8') as f:
+        print(f.read())
+
+    print("\n🎉 Done! You can access the full files in the 'output' directory.")
+
+    # Mount Google Drive option - simplified prompt
+    if input("\nSave files to Google Drive? (y/n): ").lower() == 'y':
+        from google.colab import drive
+        drive.mount('/content/drive')
+
+        drive_path = "My Drive/YT-Audio-Notes"  # Default path
+        drive_full_path = f"/content/drive/{drive_path}"
+        os.makedirs(drive_full_path, exist_ok=True)
+
+        import shutil
+        shutil.copy(transcript_file, drive_full_path)
+        shutil.copy(notes_file, drive_full_path)
+
+        print(f"Files copied to Google Drive: {drive_full_path}")
+
+# Run the tool
+run_yt_audio_notes()
